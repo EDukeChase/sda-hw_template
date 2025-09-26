@@ -1,0 +1,15 @@
+---
+title: "Homework-#: Title"
+author: "E. Duke Chase"
+date: today
+---
+```{r}
+#| label: setup
+#| include: false
+
+library(here)
+source(here::here("R", "setup.R"))
+
+# Set data directory
+data_dir <- here::here("data")
+```

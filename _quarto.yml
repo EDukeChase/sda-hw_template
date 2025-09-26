@@ -1,0 +1,17 @@
+project:
+  type: default
+
+execute:
+  freeze: auto
+
+format:
+  html:
+    theme: cosmo
+    code-fold: true
+    embed-resources: true
+    css: style.css
+    include-in-header: latex-header.tex
+    filters:
+      - proof-filter.lua
+
+lang: en
