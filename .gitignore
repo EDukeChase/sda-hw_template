@@ -21,8 +21,9 @@ renv/library/
 *.html
 *.knit.md
 *.pdf
+**/*.quarto_ipynb
 *.utf8.md
-.quarto/
+/.quarto/
 _cache/
 _freeze/
 _quarto/
