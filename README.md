@@ -79,7 +79,7 @@ Your new project is now set up and ready to go.
 To create a styled answer box, use:
 ```
 :::{.answer-box}
-    Answer here
+    Answer h |> |> ere
 :::
 ```
 
