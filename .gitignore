@@ -18,15 +18,14 @@
 renv/library/
 
 # --- Quarto ---
-_cache/
-_freeze/
-_quarto/
-*_cache/
 *.html
 *.knit.md
 *.pdf
 *.utf8.md
-/cache/
+.quarto/
+_cache/
+_freeze/
+_quarto/
 
 # General OS files
 .DS_Store

@@ -29,45 +29,48 @@ This repository contains several key configuration files that automate your setu
 
 # Workflow for a New Assignment
 
-This workflow uses the usethis package to create a new project from this template repository, all from within the R console.
-One-Time Setup
+This is a two-step process that you will run from the R console. It first creates a new, independent repository on GitHub from this template, and then clones that new repository to your local machine.
 
-First, you need to connect RStudio to your GitHub account. You only need to do this once.
+## Step 1: Create the New Repository on GitHub
 
-    Generate a GitHub Token: In the R console, run usethis::create_github_token(). This will open GitHub in your browser. Give the token a name (e.g., "RStudio-usethis"), and make sure the repo scope is checked. Click "Generate token" and copy the token immediately.
+Run the following command in your R console. This tells GitHub to generate a new repository. **Make sure to change the `name` and `description` for each new assignment.**
 
-    Store the Token: Back in R, run gitcreds::gitcreds_set(). Paste your token when prompted and press Enter. You are now authenticated.
+```r
+# Load the gh package
+library(gh)
 
-# Creating a New Project
+# --- Fill in the details for your new assignment ---
+new_repo_name <- "yyyy-mm-dd_sda_homework-num"
+new_repo_desc <- "Homework # for Spatial Analysis"
+# ----------------------------------------------------
 
-For each new assignment, run a single command in your RStudio console (it does not matter which project you have open).
+gh::gh(
+  "POST /repos/EDukeChase/sda-hw_template/generate",
+  name = new_repo_name,
+  description = new_repo_desc,
+  private = TRUE
+)
+```
 
-    Run create_from_github():
+## Step 2: Clone the New Repository to Your Computer
 
-    usethis::create_from_github(
-      "EDukeChase/sda-hw_template",
-      destdir = "C:/Users/dukec/My Drive/CU_Denver/2025_3-Fall/Spatial-Data-Analysis_MATH-6384/homework",
-      repo_name = "2025-mm-dd_sda_homework-#"
-    )   
+Now that the new repository exists on GitHub, use the `usethis` package to clone it. Make sure the `repo` argument matches the `new_repo_name` you set in Step 1.
 
-        "EDukeChase/sda-hw_template": Important: You must replace this with the actual path to your template repo on GitHub.
+```r
+# The 'destdir' should be the parent folder where you keep all your homework.
+usethis::create_from_github(
+  repo = paste0("EDukeChase/", new_repo_name),
+  destdir = "C:/Users/dukec/My Drive/CU_Denver/2025_3-Fall/Spatial-Data-Analysis_MATH-6384/homework",
+  open = TRUE
+)
+```
 
-        destdir: Specify the folder on your computer where you want the new project folder to be created (e.g., "~/Documents/Spatial_Class").
+## Step 3: Restore the R Environment
 
-        repo_name: This will be the name of the new folder on your computer and the new GitHub repository.
+Once the new project opens in RStudio, run the following command in the console to install all the necessary packages.
 
-        usethis will automatically create the new repository on GitHub from your template, clone it to your computer, and open it in a new RStudio session.
+```r
+renv::restore()
+```
 
-    Restore the Environment:
-    Once the new project is open, run renv::restore() in the console to install all the project-specific packages from the lockfile.
-
-    Start Your Analysis:
-    You are now ready to work! Create your new .qmd file for the assignment and remember to source your setup script.
-
-Reminder: Using the Answer Box
-
-To create a styled answer box for your responses, use the following Quarto syntax:
-
-::: {.answer-box}
-Your detailed answer goes here.
-:::
+Your new project is now set up and ready to go.
