@@ -10,8 +10,8 @@ format:
     code-fold: true
     embed-resources: true
     css: style.css
-    include-in-header: latex-header.tex
+    include-in-head: mathjax-config.html
     filters:
-      - proof-filter.lua
+      - filter.lua
 
 lang: en

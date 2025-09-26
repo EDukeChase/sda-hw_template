@@ -10,6 +10,7 @@ date: today
 library(here)
 source(here::here("R", "setup.R"))
 
-# Set data directory
+# Set key directory paths
 data_dir <- here::here("data")
+output_dir <- here::here("output")
 ```

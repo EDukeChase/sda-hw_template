@@ -27,7 +27,7 @@ This repository contains several key configuration files that automate your setu
 
     .gitignore: A standard file that tells Git to ignore temporary files and folders (like the renv/library/ folder, user settings, etc.). This keeps your repository clean and focused only on the source code.
 
-Workflow for a New Assignment
+# Workflow for a New Assignment
 
 This workflow uses the usethis package to create a new project from this template repository, all from within the R console.
 One-Time Setup
@@ -38,7 +38,7 @@ First, you need to connect RStudio to your GitHub account. You only need to do t
 
     Store the Token: Back in R, run gitcreds::gitcreds_set(). Paste your token when prompted and press Enter. You are now authenticated.
 
-Creating a New Project
+# Creating a New Project
 
 For each new assignment, run a single command in your RStudio console (it does not matter which project you have open).
 

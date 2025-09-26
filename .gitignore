@@ -1,5 +1,11 @@
-# RStudio and R
-/output/
+# --- Project Specific Folders and Files---
+#/data/*
+!/data/README.md
+#/output/*
+!/output/README.md
+
+# --- RStudio and R ---
+.httr-oauth
 .Rapp.history
 .RData
 .RDataTmp
@@ -8,10 +14,10 @@
 .Rproj.user/
 .Ruserdata
 
-# Renv
+# --- Renv ---
 renv/library/
 
-# Quarto
+# --- Quarto ---
 _cache/
 _freeze/
 _quarto/
@@ -24,5 +30,4 @@ _quarto/
 
 # General OS files
 .DS_Store
-.httr-oauth
 Thumbs.db
