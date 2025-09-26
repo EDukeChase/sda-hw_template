@@ -74,3 +74,17 @@ renv::restore()
 ```
 
 Your new project is now set up and ready to go.
+
+# Reminders
+To create a styled answer box, use:
+```
+:::{.answer-box}
+    Answer here
+:::
+```
+
+To create a styled proof box, use:
+```
+::: {.boxed-proof}
+    Proof here
+:::
