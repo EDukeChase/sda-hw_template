@@ -13,5 +13,7 @@ format:
     include-in-head: mathjax-config.html
     filters:
       - filter.lua
+    code-links:
+      repo
 
 lang: en
