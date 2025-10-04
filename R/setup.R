@@ -30,61 +30,51 @@ options(
   ggplot2.continuous.fill = "viridis"
 )
 
-# --- Set up parallel processing ---
-n_cores <- parallel::detectCores() - 1
-plan(multisession, workers = n_cores)
-
 # --- Custom Functions ---
 
-#' Cache a Computation Based on Code Hash
+#' Cache a Computation and Optionally Run in Parallel
 #'
 #' @description
-#' This function provides a smart caching mechanism. It evaluates an R expression
-#' and saves the result to a file. On subsequent runs, it first generates a
-#' cryptographic hash of the code expression. If that hash matches the hash
-#' stored in the cache file, it loads the result directly from the cache,
-#' saving significant time. If the code has changed (and thus the hash is
-#' different) or if no cache file exists, it re-runs the computation and
-#' saves the new result and hash.
+#' This function provides a smart caching mechanism with optional on-demand
+#' parallel processing. It evaluates an R expression and saves the result.
+#' On subsequent runs, if the code has not changed, it loads the result
+#' directly from the cache. If the code needs to be re-run, it can optionally
+#' set up a parallel backend to speed up the computation, and will automatically
+#' shut it down afterward.
 #'
-#' @param code {expression} The R code to be executed and cached. This should
-#'   be enclosed in curly braces `{}`.
+#' @param code {expression} The R code to be executed and cached. Enclose in `{}`.
 #' @param cache_filename {character} A unique filename for the cache file (e.g.,
-#'   "my_analysis_cache.rds"). The file will be saved in the `output/` directory.
+#'   "my_analysis_cache.rds"). Saved in the `output/` directory.
+#' @param parallel {logical} If `TRUE` (the default), sets up a `future`
+#'   multisession plan before running the code and restores the sequential plan
+#'   afterward. If `FALSE`, runs the code sequentially.
 #'
-#' @return The result of the evaluated `code` expression, either newly
-#'   computed or loaded from the cache.
+#' @return The result of the evaluated `code` expression.
 #'
 #' @importFrom digest digest
-#'   This tag explicitly declares that we are using the `digest` function from
-#'   the `digest` package. This is a best practice for managing dependencies.
+#' @importFrom future plan nbrOfWorkers multisession sequential
+#' @importFrom parallel detectCores
 #'
 #' @export
-#'   This tag marks the function as available for use outside of this script,
-#'   which is a standard practice for functions you intend to use in your analysis.
 #'
 #' @examples
 #' \dontrun{
 #' # --- How to use the function in your .qmd file ---
 #'
-#' # Define a long-running computation
-#' my_computation <- cache_computation({
+#' # Run a long computation using parallel processing (the default)
+#' result1 <- cache_computation({
+#'   Sys.sleep(5) # Represents a slow, parallelizable task
+#'   1:100
+#' }, cache_filename = "parallel_result.rds")
 #'
-#'   # Simulate a long process
-#'   Sys.sleep(5)
-#'
-#'   # Perform the calculation
-#'   iris %>%
-#'     group_by(Species) %>%
-#'     summarise(mean_petal = mean(Petal.Length))
-#'
-#' }, cache_filename = "iris_summary.rds")
-#'
-#' # The first time this runs, it will take 5 seconds.
-#' # Every subsequent time, it will load instantly.
-#' print(my_computation)
+#' # Run a computation sequentially
+#' result2 <- cache_computation({
+#'   Sys.sleep(2) # A task that doesn't need parallel overhead
+#'   "done"
+#' }, cache_filename = "sequential_result.rds", parallel = FALSE)
 #' }
-cache_computation <- function(code, cache_filename) {
+cache_computation <- function(code, cache_filename, parallel = TRUE) {
+  
   # Create a unique hash of the code expression
   code_expr <- substitute(code)
   current_hash <- digest::digest(code_expr)
@@ -105,8 +95,28 @@ cache_computation <- function(code, cache_filename) {
     message("No cache found. Running computation.")
   }
   
-  # If we get here, we need to run the code
-  result <- eval(code_expr)
+  # If we get here, we need to run the code.
+  # Check if parallel execution is requested.
+  if (parallel) {
+    # --- Set up parallel plan ---
+    n_cores <- parallel::detectCores() - 1
+    future::plan(future::multisession, workers = n_cores)
+    message(paste("Parallel plan activated with", future::nbrOfWorkers(), "workers."))
+    
+    # IMPORTANT: Ensure the sequential plan is restored when the function exits,
+    # even if there's an error.
+    on.exit({
+      future::plan(future::sequential)
+      message("Parallel plan shut down. Restored sequential plan.")
+    }, add = TRUE)
+    
+    # Evaluate the user's code in the parallel context
+    result <- eval(code_expr)
+    
+  } else {
+    # Run the code sequentially
+    result <- eval(code_expr)
+  }
   
   # Save the result AND the hash to the cache file
   data_to_cache <- list(result = result, hash = current_hash)
