@@ -53,7 +53,23 @@ rename_project_files <- function() {
     message("Could not find a unique '...-num.qmd' file. Skipping .qmd rename.")
   }
   
-  # --- 3. Final instruction ---
+  # --- 3. Remove the template README files ---
+  
+  # List of README files to remove
+  readme_files <- c(
+    "data/README.md",
+    "output/README.md"
+  )
+  
+  for (file_path in readme_files) {
+    full_path <- here::here(file_path)
+    if (file.exists(full_path)) {
+      file.remove(full_path)
+      message("Removed template file: '", file_path, "'")
+    }
+  }
+  
+  # --- 4. Final instruction ---
   
   message("\nIMPORTANT: File renaming complete. Please close and reopen this project.")
   message("Use 'File > Open Project...' and select the new '", new_name, ".Rproj' file.")
