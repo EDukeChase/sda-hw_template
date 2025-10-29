@@ -1,7 +1,7 @@
 # --- Project Specific Folders and Files---
-#/data/*
+/data/*
 !/data/README.md
-#/output/*
+/output/*
 !/output/README.md
 
 # --- RStudio and R ---
