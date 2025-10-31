@@ -9,7 +9,7 @@
 #' The script performs the following actions:
 #'   1. Detects the new project's directory name.
 #'   2. Renames the generic `.Rproj` and starter `.qmd` files.
-#'   3. **Deletes the template's main README.md and renames _PROJECT_README.md to README.md.**
+#'   3. **Overwrites the main README.md** with the project-specific template.
 #'   4. Removes README files from sub-directories.
 #'   5. Prints a final instruction to restart the RStudio session.
 #'
@@ -46,20 +46,23 @@ initialize_project <- function() {
     message("Could not find a unique '...-num.qmd' file. Skipping .qmd rename.")
   }
   
-  # --- 3. Replace the main README.md file ---
-  old_readme_path <- here::here("README.md")
-  new_readme_source_path <- here::here("_PROJECT_README.md")
-  
-  if (file.exists(old_readme_path) && file.exists(new_readme_source_path)) {
-    file.remove(old_readme_path)
-    file.rename(from = new_readme_source_path, to = old_readme_path)
-    message("Replaced template README.md with project-specific README.")
-  } else {
-    message("README files not found, skipping replacement.")
+  # --- 3. Overwrite the main README.md file ---
+  main_readme_path <- here::here("README.md")
+  if (file.exists(main_readme_path)) {
+    readme_lines <- readLines(main_readme_path)
+    template_start_line <- grep("# Template README.md for Projects", readme_lines, fixed = TRUE)
+    
+    if (length(template_start_line) == 1) {
+      new_readme_content <- readme_lines[template_start_line:length(readme_lines)]
+      # The first line of the new content is the header, which we don't need
+      new_readme_content <- new_readme_content[-1] 
+      writeLines(new_readme_content, main_readme_path)
+      message("Overwrote main README.md with project-specific template.")
+    }
   }
   
   # --- 4. Remove sub-directory README files ---
-  readme_files_to_remove <- c("data/README.md", "docs/README.md", "output/README.md", "R/README.md")
+  readme_files_to_remove <- c("data/README.md", "output/README.md")
   
   for (file_path in readme_files_to_remove) {
     full_path <- here::here(file_path)
