@@ -36,8 +36,8 @@ This command generates a new repository from this template. **Update the `name` 
 
 ```r
 library(gh)
-new_repo_name <- "2025-10-14_sda_homework-06"
-new_repo_desc <- "Homework 6 for Spatial Analysis"
+new_repo_name <- "2025-mm-dd_sda_homework-##"
+new_repo_desc <- "Homework # for Spatial Data Analysis"
 
 gh::gh(
   "POST /repos/EDukeChase/sda-hw_template/generate",
@@ -54,7 +54,7 @@ Use `usethis` to clone the new repo to your local machine.
 library(usethis)
 create_from_github(
   repo = paste0("EDukeChase/", new_repo_name),
-  destdir = "G:\\My Drive\\CU_Denver\\2025_3-Fall\\Spatial-Data-Analysis_MATH-6384\\homework", # Change this to your main homework folder
+  destdir = "C:\\Users\\dukec\\Documents\\cu_denver\\2025_03-Fall\\spatial-data-analysis_math-6384\\sda_homework",
   open = TRUE
 )
 ```
@@ -72,7 +72,7 @@ renv::restore()
 Run this script to automatically rename files and clean up the READMEs.
 
 ```r
-source("R/project_initialization.R")
+source("R/initialize_project.R")
 ```
 
 #### Step 5: Restart the Project
